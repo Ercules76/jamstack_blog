@@ -10,11 +10,20 @@ dotenv();
 const dev = process.env.NODE_ENV !== 'production';
 const server = express();
 
+// Redirect root to Admin panel
+server.get('/', (_, res) => {
+  res.redirect('/admin');
+});
+
+
 const start = async () => {
   await payload.init({
     secret: process.env.PAYLOAD_SECRET_KEY,
     mongoURL: process.env.MONGO_URL,
     express: server,
+    onInit: async () => {
+      payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`)
+    },
   });
 
   if (!process.env.NEXT_BUILD) {
